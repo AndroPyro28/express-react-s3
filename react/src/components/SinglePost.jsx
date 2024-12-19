@@ -1,9 +1,9 @@
-import { ChatIcon, UserIcon, TrashIcon } from '@heroicons/react/solid'
+import { ChatIcon, UserIcon, TrashIcon, DownloadIcon } from '@heroicons/react/solid'
 import { HeartIcon as HeartOutline } from '@heroicons/react/outline'
 
 export default function SinglePost({className, post, likeClicked, commentClicked, deletePostClicked}) {
-  const {id, caption, imageUrl, totalComments, totalLikes} = post
-  
+  const {id, caption, imageUrl:fileUrl, totalComments, totalLikes, type} = post
+    console.log(fileUrl)
   return (
     <div className={className + ' outline-1'} style={{width:650}}>
 
@@ -18,10 +18,20 @@ export default function SinglePost({className, post, likeClicked, commentClicked
 
         <div className="flex flex-row items-end space-x-4 justify-center">
 
-
-          <a href={imageUrl} target='_blank'>
-          <img className="rounded" width="430" height="768" src={imageUrl} ></img>
+          <a href={fileUrl} target='_blank'>
+            {
+              (() => {
+                if(type.includes("video")) {
+                  return  <video className="rounded" width="430" height="768" src={fileUrl} controls></video>
+                }
+                if(type.includes("image")) {
+                  return  <img className="rounded" width="430" height="768" src={fileUrl} ></img>
+                }
+              })()
+            }
+         
           </a>
+
           
 
           {/* Actions */}
@@ -38,6 +48,15 @@ export default function SinglePost({className, post, likeClicked, commentClicked
             <div className='flex flex-col items-center' onClick={() => deletePostClicked({id})}>
               <TrashIcon className='cursor-pointer hover:text-gray-900 active:text-gray-700 h-14 w-14 text-gray-700' />
             </div>
+
+              <a href={fileUrl} target='_blank' className='flex flex-col items-center' download>
+                <DownloadIcon className='cursor-pointer hover:text-gray-900 active:text-gray-700 h-14 w-14 text-gray-700'/>
+              </a>
+
+
+
+
+
           </div>          
         </div>
 
