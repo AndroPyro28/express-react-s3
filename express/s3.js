@@ -24,7 +24,7 @@ export function uploadFile(fileBuffer, fileName, mimetype) {
     Bucket: bucketName,
     Body: fileBuffer,
     Key: fileName,
-    ContentType: mimetype
+    ContentType: mimetype.toLowerCase()
   }
 
   return s3Client.send(new PutObjectCommand(uploadParams));
@@ -48,6 +48,7 @@ export async function getObjectSignedUrl(key) {
   // https://aws.amazon.com/blogs/developer/generate-presigned-url-modular-aws-sdk-javascript/
   const command = new GetObjectCommand(params);
   const seconds = 60
+  
   const url = await getSignedUrl(s3Client, command, { expiresIn: seconds });
 
   return url

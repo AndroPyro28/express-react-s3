@@ -31,16 +31,15 @@ app.post('/api/posts', upload.single('image'), async (req, res) => {
   const caption = req.body.caption
   const imageName = generateFileName()
 
-  const fileBuffer = await sharp(file.buffer)
-    .resize({ height: 1920, width: 1080, fit: "contain" })
-    .toBuffer()
+  
 
-  await uploadFile(fileBuffer, imageName, file.mimetype)
+  await uploadFile(file.buffer, imageName, file.mimetype)
 
   const post = await prisma.posts.create({
     data: {
       imageName,
       caption,
+      type: file.mimetype
     }
   })
   
