@@ -3,7 +3,7 @@ import { HeartIcon as HeartOutline } from '@heroicons/react/outline'
 
 export default function SinglePost({className, post, likeClicked, commentClicked, deletePostClicked}) {
   const {id, caption, imageUrl:fileUrl, totalComments, totalLikes, type} = post
-    console.log(fileUrl)
+    const fileType = type.split("/")[1]
   return (
     <div className={className + ' outline-1'} style={{width:650}}>
 
@@ -17,8 +17,6 @@ export default function SinglePost({className, post, likeClicked, commentClicked
         <p className="text-base">{caption}</p>
 
         <div className="flex flex-row items-end space-x-4 justify-center">
-
-          <a href={fileUrl} target='_blank'>
             {
               (() => {
                 if(type.includes("video")) {
@@ -29,10 +27,6 @@ export default function SinglePost({className, post, likeClicked, commentClicked
                 }
               })()
             }
-         
-          </a>
-
-          
 
           {/* Actions */}
           <div className='flex flex-col space-y-4'>
@@ -49,14 +43,9 @@ export default function SinglePost({className, post, likeClicked, commentClicked
               <TrashIcon className='cursor-pointer hover:text-gray-900 active:text-gray-700 h-14 w-14 text-gray-700' />
             </div>
 
-              <a href={fileUrl} target='_blank' className='flex flex-col items-center' download>
+              <a href={fileUrl}   download={`file.${fileType}`} className='flex flex-col items-center' >
                 <DownloadIcon className='cursor-pointer hover:text-gray-900 active:text-gray-700 h-14 w-14 text-gray-700'/>
               </a>
-
-
-
-
-
           </div>          
         </div>
 

@@ -24,7 +24,8 @@ export function uploadFile(fileBuffer, fileName, mimetype) {
     Bucket: bucketName,
     Body: fileBuffer,
     Key: fileName,
-    ContentType: mimetype.toLowerCase()
+    ContentType: mimetype.toLowerCase(), 
+    ContentDisposition: 'attachment',  // This will trigger a download in the browser
   }
 
   return s3Client.send(new PutObjectCommand(uploadParams));
