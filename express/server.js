@@ -20,6 +20,7 @@ app.get("/api/posts", async (req, res) => {
   const posts = await prisma.posts.findMany({orderBy: [{ created: 'desc'}]})
   for (let post of posts) {
     post.imageUrl = await getObjectSignedUrl(post.imageName)
+    console.log("url::", post.imageUrl)
   }
   res.send(posts)
 })

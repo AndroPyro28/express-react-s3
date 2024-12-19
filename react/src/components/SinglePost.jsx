@@ -19,7 +19,10 @@ export default function SinglePost({className, post, likeClicked, commentClicked
         <div className="flex flex-row items-end space-x-4 justify-center">
 
 
-          <img className="rounded" width="430" height="768" src={imageUrl}></img>
+          <a href={imageUrl} target='_blank'>
+          <img className="rounded" width="430" height="768" src={imageUrl} ></img>
+          </a>
+          
 
           {/* Actions */}
           <div className='flex flex-col space-y-4'>
