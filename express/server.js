@@ -6,7 +6,9 @@ import crypto from 'crypto'
 import cors from "cors"
 import { PrismaClient } from '@prisma/client'
 import { uploadFile, deleteFile, getObjectSignedUrl } from './s3.js'
-
+import {getPosts, setPosts} from "./controller/index.js"
+import { Server } from 'socket.io' ;
+import http from "http"
 const app = express()
 const prisma = new PrismaClient()
 
@@ -14,37 +16,13 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 app.use(cors())
 
+
 const generateFileName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
 
-app.get("/api/posts", async (req, res) => {
-  const posts = await prisma.posts.findMany({orderBy: [{ created: 'desc'}]})
-  for (let post of posts) {
-    post.imageUrl = await getObjectSignedUrl(post.imageName)
-    console.log("url::", post.imageUrl)
-  }
-  res.send(posts)
-})
+app.get("/api/posts", getPosts)
 
 
-app.post('/api/posts', upload.single('image'), async (req, res) => {
-  const file = req.file
-  const caption = req.body.caption
-  const imageName = generateFileName()
-
-  
-
-  await uploadFile(file.buffer, imageName, file.mimetype)
-
-  const post = await prisma.posts.create({
-    data: {
-      imageName,
-      caption,
-      type: file.mimetype
-    }
-  })
-  
-  res.status(201).send(post)
-})
+app.post('/api/posts', upload.single('image'), setPosts)
 
 app.delete("/api/posts/:id", async (req, res) => {
   const id = +req.params.id
@@ -56,4 +34,18 @@ app.delete("/api/posts/:id", async (req, res) => {
   res.send(post)
 })
 
-app.listen(3001, () => console.log("listening on port 3001"))
+const server = http.createServer(app);
+
+server.listen(3001, () => console.info(`server listening on port -${3001}`)) 
+const io = new Server(server, { // we will use this later
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST", "DELETE", "PUT", "PATCH"]
+    }
+})
+
+io.on("connection", (socket) => {
+  console.log('connection!')
+})
+
+export default io

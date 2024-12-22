@@ -1,6 +1,7 @@
 import { Disclosure } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
-
+import { useEffect } from 'react'
+import {io} from "socket.io-client"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -12,6 +13,12 @@ export default function NavBar({onHome, onNewPost}) {
     { name: 'New Post', current: false, onClick: onNewPost},
   ] 
 
+  useEffect(() => {
+    const socket = io("http://localhost:3001")
+    socket.on("hey", (data) => {
+      console.log('hello', data)
+    })
+  }, [])
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
